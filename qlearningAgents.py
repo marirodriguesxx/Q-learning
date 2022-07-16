@@ -65,17 +65,14 @@ class QLearningAgent(ReinforcementAgent):
         """
         "**** YOUR CODE HERE ****"
         max = -100000
-        #max = -sys.maxsize - 1
         current = 0
         for i in self.getLegalActions(state):
           current = self.getQValue(state,i)
-          if current > max : 
-            max = current 
-          
-        if max  == -100000:
-          return 0
-        else:
-          return max 
+          if current > max:
+            max = current
+        if max == -100000:
+            return 0
+        return max
         util.raiseNotDefined()
 
 
@@ -86,19 +83,15 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "**** YOUR CODE HERE ****"
-        max = self.computeValueFromQValues(state)
-        #max = -sys.maxsize - 1
+        max = -100000
         current = 0
-        action = []
+        action = None
         for i in self.getLegalActions(state):
           current = self.getQValue(state,i)
-          if current == max : 
-            action.append(i)
-
-        if len(action)>1:
-          return random.choice([[action]]) 
-        else:
-          return action[0]
+          if current > max:
+            max = current
+            action = i
+        return action
         util.raiseNotDefined()
 
     def getAction(self, state):
@@ -116,6 +109,12 @@ class QLearningAgent(ReinforcementAgent):
         legalActions = self.getLegalActions(state)
         action = None
         "**** YOUR CODE HERE ****"
+        if len(legalActions)==0:
+          return action
+        if util.flipCoin(1-self.epsilon):
+          return self.getPolicy(state)
+        else:
+          return random.choice(legalActions)
         util.raiseNotDefined()
 
         return action
@@ -131,7 +130,7 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
         self.qValue[state,action]=((1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState)))
-        #return
+        return
         #getValue ja pega o max?
         util.raiseNotDefined()
 
@@ -196,6 +195,8 @@ class ApproximateQAgent(PacmanQAgent):
           where * is the dotProduct operator
         """
         "*** YOUR CODE HERE ***"
+        self.qValue[state,action]=self.weights.__mul__(self.featExtractor)
+        return self.qValue[state,action]
         util.raiseNotDefined()
 
     def update(self, state, action, nextState, reward):
@@ -203,6 +204,9 @@ class ApproximateQAgent(PacmanQAgent):
            Should update your weights based on transition
         """
         "**** YOUR CODE HERE ****"
+        for key in self.weights:
+          self.weights[key]=self.weights[key]+self.alpha*(reward+self.discount*self.getValue(nextState)-self.getQValue(state,action))*self.featExtractor[key]
+        return
         util.raiseNotDefined()
 
     def final(self, state):
