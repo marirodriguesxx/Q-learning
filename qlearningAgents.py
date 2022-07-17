@@ -11,6 +11,11 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+# Grupo: Ana Clara Osias (Es92435) e Mariana Rodrigues (98875)
+# PASSO 3: NAO EH POSSIVEL, pois para o número de possibilidades existentes, 
+# // mesmo com um lerning rate alto e uma exploration rate alta
+# // em apenas 50 episodios nao eh possivel obter a politica otima
+
 
 from argparse import Action
 from game import *
@@ -127,6 +132,7 @@ class QLearningAgent(ReinforcementAgent):
           it will be called on your behalf
         """
         "*** YOUR CODE HERE ***"
+        # Formulla da aula 10
         self.qValue[state,action]=((1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState)))
         return
 
